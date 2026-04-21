@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #059669;
+  --color-primary-light: #d1fae5;
+  --color-primary-dark: #047857;
+  --color-surface: #ffffff;
+  --color-bg: #f3f8f5;
+  --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-muted: #6b7280;
+  --color-subtle: #9ca3af;
+  --radius-card: 1.25rem;
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+}
+
+html,
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 3px;
+}
+
+/* Page-load stagger */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.stagger-1 { animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0s    both; }
+.stagger-2 { animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.07s  both; }
+.stagger-3 { animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.14s  both; }
+.stagger-4 { animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.21s  both; }
+
+/* Tab fade transition */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content {
+  animation: fadeIn 0.18s ease-out;
+  min-height: 200px;
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 0.5rem;
+}
+
+/* Success flash */
+@keyframes successPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.success-pop {
+  animation: successPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
