@@ -19,7 +19,7 @@ interface Props {
 }
 
 const TABS: { id: Tab; label: string; icon: string; hint: string }[] = [
-  { id: "quick", label: "Quick Add", icon: "⚡", hint: "25 foods" },
+  { id: "quick", label: "Quick Add", icon: "⚡", hint: "50 Indian foods" },
   { id: "text", label: "Describe", icon: "✍️", hint: "AI" },
   { id: "photo", label: "Photo", icon: "📷", hint: "AI" },
 ];
