@@ -5,6 +5,6 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  deleteEntry(params.id);
+  await deleteEntry(params.id);
   return NextResponse.json({ success: true });
 }

@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const date =
     searchParams.get("date") ?? new Date().toISOString().split("T")[0];
-  return NextResponse.json(getEntries(date));
+  return NextResponse.json(await getEntries(date));
 }
 
 export async function POST(request: NextRequest) {
@@ -16,6 +16,6 @@ export async function POST(request: NextRequest) {
     id: crypto.randomUUID(),
     timestamp: Date.now(),
   };
-  addEntry(entry);
+  await addEntry(entry);
   return NextResponse.json(entry, { status: 201 });
 }
