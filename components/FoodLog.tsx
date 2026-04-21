@@ -131,7 +131,7 @@ function SectionHeader() {
 
 function EntryRow({ entry, onRemove }: { entry: LogEntry; onRemove: (id: string) => void }) {
   return (
-    <div className="flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50/70 transition-colors">
+    <div className="group flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50/70 transition-colors">
       <div className="flex-1 min-w-0">
         <p className="font-medium text-gray-800 text-sm truncate">{entry.foodName}</p>
         <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
@@ -147,10 +147,9 @@ function EntryRow({ entry, onRemove }: { entry: LogEntry; onRemove: (id: string)
       <span className="font-bold text-gray-900 text-sm tabular-nums whitespace-nowrap">
         {Math.round(entry.calories)} cal
       </span>
-      {/* Always-visible on mobile (reduced opacity), hover-visible on desktop */}
       <button
         onClick={() => onRemove(entry.id)}
-        className="w-7 h-7 flex items-center justify-center rounded-full text-gray-300 hover:bg-red-50 hover:text-red-500 transition-all flex-shrink-0 text-lg leading-none opacity-40 hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100"
+        className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all flex-shrink-0 text-lg leading-none opacity-60 hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100"
         aria-label={`Remove ${entry.foodName}`}
         style={{ WebkitTapHighlightColor: "transparent" }}
       >

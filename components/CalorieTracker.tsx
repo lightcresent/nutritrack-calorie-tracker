@@ -22,18 +22,36 @@ function formatDate(dateStr: string): string {
   });
 }
 
+function getOrCreateSessionId(): string {
+  const key = "nutritrack-session-id";
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(key, id);
+  }
+  return id;
+}
+
 export default function CalorieTracker() {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMeal, setSelectedMeal] = useState<MealCategory>(getCurrentMeal);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const today = getToday();
 
+  useEffect(() => {
+    setSessionId(getOrCreateSessionId());
+  }, []);
+
   const fetchEntries = useCallback(async () => {
-    const res = await fetch(`/api/log?date=${today}`);
+    if (!sessionId) return;
+    const res = await fetch(`/api/log?date=${today}`, {
+      headers: { "X-Session-Id": sessionId },
+    });
     const data = await res.json();
     setEntries(data);
     setLoading(false);
-  }, [today]);
+  }, [today, sessionId]);
 
   useEffect(() => {
     fetchEntries();
@@ -44,7 +62,10 @@ export default function CalorieTracker() {
   ): Promise<void> {
     const res = await fetch("/api/log", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Session-Id": sessionId ?? "default",
+      },
       body: JSON.stringify({ ...payload, meal: selectedMeal }),
     });
     const newEntry: LogEntry = await res.json();
@@ -83,7 +104,10 @@ export default function CalorieTracker() {
 
   async function handleRemove(id: string) {
     setEntries((prev) => prev.filter((e) => e.id !== id));
-    await fetch(`/api/log/${id}`, { method: "DELETE" });
+    await fetch(`/api/log/${id}`, {
+      method: "DELETE",
+      headers: { "X-Session-Id": sessionId ?? "default" },
+    });
   }
 
   const totals: MacroTotals = entries.reduce(

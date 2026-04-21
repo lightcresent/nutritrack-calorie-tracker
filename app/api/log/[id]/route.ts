@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { deleteEntry } from "@/lib/db";
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  await deleteEntry(params.id);
+  const sessionId = request.headers.get("X-Session-Id") ?? "default";
+  await deleteEntry(params.id, sessionId);
   return NextResponse.json({ success: true });
 }
