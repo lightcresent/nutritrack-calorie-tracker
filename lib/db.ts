@@ -34,22 +34,21 @@ async function ensureTable(): Promise<void> {
   return _tableInit;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function rowToEntry(row: any): LogEntry {
+function rowToEntry(row: Record<string, unknown>): LogEntry {
   return {
-    id: row.id,
-    foodId: row.food_id,
-    foodName: row.food_name,
+    id: String(row.id),
+    foodId: String(row.food_id),
+    foodName: String(row.food_name),
     calories: Number(row.calories),
     protein: Number(row.protein),
     carbs: Number(row.carbs),
     fat: Number(row.fat),
     servingSize: Number(row.serving_size),
-    servingUnit: row.serving_unit,
+    servingUnit: String(row.serving_unit),
     quantity: Number(row.quantity),
-    date: row.date,
+    date: String(row.date),
     timestamp: Number(row.timestamp),
-    meal: row.meal ?? undefined,
+    meal: row.meal ? (row.meal as LogEntry["meal"]) : undefined,
   };
 }
 
