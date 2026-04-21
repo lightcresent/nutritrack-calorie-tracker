@@ -1,17 +1,23 @@
 import fs from "fs";
 import path from "path";
+import { neon } from "@neondatabase/serverless";
 import { LogEntry } from "@/types";
 
-const IS_POSTGRES = !!process.env.POSTGRES_URL;
+const IS_POSTGRES = !!(process.env.POSTGRES_URL || process.env.DATABASE_URL);
 
 // ─── Postgres (production on Vercel) ────────────────────────────────────────
+
+function getSql() {
+  const url = process.env.POSTGRES_URL ?? process.env.DATABASE_URL!;
+  return neon(url);
+}
 
 let _tableInit: Promise<void> | null = null;
 
 async function ensureTable(): Promise<void> {
   if (_tableInit) return _tableInit;
   _tableInit = (async () => {
-    const { sql } = await import("@vercel/postgres");
+    const sql = getSql();
     await sql`
       CREATE TABLE IF NOT EXISTS log_entries (
         id            TEXT    PRIMARY KEY,
@@ -34,7 +40,9 @@ async function ensureTable(): Promise<void> {
   return _tableInit;
 }
 
-function rowToEntry(row: Record<string, unknown>): LogEntry {
+type PgRow = Record<string, unknown>;
+
+function rowToEntry(row: PgRow): LogEntry {
   return {
     id: String(row.id),
     foodId: String(row.food_id),
@@ -54,16 +62,16 @@ function rowToEntry(row: Record<string, unknown>): LogEntry {
 
 async function pgGetEntries(date: string): Promise<LogEntry[]> {
   await ensureTable();
-  const { sql } = await import("@vercel/postgres");
-  const { rows } = await sql`
+  const sql = getSql();
+  const rows = await sql`
     SELECT * FROM log_entries WHERE date = ${date} ORDER BY timestamp ASC
   `;
-  return rows.map(rowToEntry);
+  return rows.map((r) => rowToEntry(r as PgRow));
 }
 
 async function pgAddEntry(entry: LogEntry): Promise<void> {
   await ensureTable();
-  const { sql } = await import("@vercel/postgres");
+  const sql = getSql();
   await sql`
     INSERT INTO log_entries
       (id, food_id, food_name, calories, protein, carbs, fat,
@@ -77,7 +85,7 @@ async function pgAddEntry(entry: LogEntry): Promise<void> {
 }
 
 async function pgDeleteEntry(id: string): Promise<void> {
-  const { sql } = await import("@vercel/postgres");
+  const sql = getSql();
   await sql`DELETE FROM log_entries WHERE id = ${id}`;
 }
 
